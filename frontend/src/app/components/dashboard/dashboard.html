@@ -1,0 +1,123 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>📊 Tableau de Bord</h1>
+      <div class="user-info">
+        <span *ngIf="user">Bonjour, {{ user.nom || user.email }}</span>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="dashboard-nav">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/produits" routerLinkActive="active">Produits</a>
+    <a routerLink="/categories" routerLinkActive="active">Catégories</a>
+    <a routerLink="/fournisseurs" routerLinkActive="active">Fournisseurs</a>
+    <a routerLink="/commandes" routerLinkActive="active">Commandes</a>
+    <a routerLink="/mouvements" routerLinkActive="active">Mouvements</a>
+    <a routerLink="/alertes" routerLinkActive="active">Alertes</a>
+  </nav>
+
+  <!-- Contenu Principal -->
+  <main class="dashboard-content">
+    <div *ngIf="loading" class="loading">
+      <p>Chargement des statistiques...</p>
+    </div>
+
+    <div *ngIf="!loading" class="stats-grid">
+      <!-- Card Total Produits -->
+      <div class="stat-card blue">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <h3>{{ stats.total_produits || 0 }}</h3>
+          <p>Produits</p>
+        </div>
+      </div>
+
+      <!-- Card Total Catégories -->
+      <div class="stat-card green">
+        <div class="stat-icon">📁</div>
+        <div class="stat-info">
+          <h3>{{ stats.total_categories || 0 }}</h3>
+          <p>Catégories</p>
+        </div>
+      </div>
+
+      <!-- Card Total Fournisseurs -->
+      <div class="stat-card orange">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-info">
+          <h3>{{ stats.total_fournisseurs || 0 }}</h3>
+          <p>Fournisseurs</p>
+        </div>
+      </div>
+
+      <!-- Card Total Commandes -->
+      <div class="stat-card purple">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+          <h3>{{ stats.total_commandes || 0 }}</h3>
+          <p>Commandes</p>
+        </div>
+      </div>
+
+      <!-- Card Valeur Stock -->
+      <div class="stat-card teal">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3>{{ stats.valeur_stock || 0 }} DT</h3>
+          <p>Valeur du Stock</p>
+        </div>
+      </div>
+
+      <!-- Card Stock Bas -->
+      <div class="stat-card red">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-info">
+          <h3>{{ stats.produits_stock_bas || 0 }}</h3>
+          <p>Produits en Stock Bas</p>
+        </div>
+      </div>
+
+      <!-- Card Alertes -->
+      <div class="stat-card yellow">
+        <div class="stat-icon">🔔</div>
+        <div class="stat-info">
+          <h3>{{ stats.alertes_non_lues || 0 }}</h3>
+          <p>Alertes Non Lues</p>
+        </div>
+      </div>
+
+      <!-- Card Commandes en Attente -->
+      <div class="stat-card pink">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <h3>{{ stats.commandes_en_attente || 0 }}</h3>
+          <p>Commandes en Attente</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Rapides -->
+    <div class="quick-actions">
+      <h2>Actions Rapides</h2>
+      <div class="actions-grid">
+        <button routerLink="/produits/new" class="action-btn blue">
+          ➕ Nouveau Produit
+        </button>
+        <button routerLink="/commandes/new" class="action-btn green">
+          📝 Nouvelle Commande
+        </button>
+        <button routerLink="/mouvements/new" class="action-btn orange">
+          📊 Mouvement de Stock
+        </button>
+        <button routerLink="/alertes" class="action-btn red">
+          🔔 Voir les Alertes
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

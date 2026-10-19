@@ -1,0 +1,90 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>🔔 Alertes de Stock</h1>
+    <div class="header-actions">
+      <button (click)="genererAlertes()" class="btn-generate">
+        🔄 Générer les Alertes
+      </button>
+      <button (click)="toutLire()" class="btn-mark-all">
+        ✅ Tout Marquer comme Lu
+      </button>
+    </div>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / <span>Alertes</span>
+  </nav>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <button 
+      [class.active]="showOnlyUnread" 
+      (click)="toggleFilter()"
+      class="filter-btn"
+    >
+      {{ showOnlyUnread ? '📭 Afficher Toutes' : '📬 Afficher Non Lues' }}
+    </button>
+    <span class="count-badge">
+      {{ alertes.length }} alerte(s)
+    </span>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading" class="alertes-container">
+    <div *ngFor="let alerte of alertes" class="alerte-card" [ngClass]="{
+      'alerte-unread': !alerte.lu,
+      'alerte-read': alerte.lu
+    }">
+      <div class="alerte-icon" [ngClass]="getTypeClass(alerte.type)">
+        {{ getTypeIcon(alerte.type) }}
+      </div>
+      
+      <div class="alerte-content">
+        <div class="alerte-header">
+          <h3>{{ alerte.produit?.nom }}</h3>
+          <span class="alerte-date">{{ alerte.date_alerte | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+        <p class="alerte-message">{{ alerte.message }}</p>
+        <div class="alerte-meta">
+          <span class="produit-ref">Réf: {{ alerte.produit?.reference }}</span>
+          <span class="produit-stock">Stock: {{ alerte.produit?.quantite_stock }}</span>
+        </div>
+      </div>
+
+      <div class="alerte-actions">
+        <button 
+          *ngIf="!alerte.lu" 
+          (click)="marquerLue(alerte.id!)" 
+          class="btn-mark-read"
+          title="Marquer comme lue"
+        >
+          ✅
+        </button>
+        <button 
+          [routerLink]="['/produits', alerte.produit?.id]" 
+          class="btn-view"
+          title="Voir le produit"
+        >
+          👁️
+        </button>
+        <button 
+          (click)="deleteAlerte(alerte.id!)" 
+          class="btn-delete"
+          title="Supprimer"
+        >
+          🗑️
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="alertes.length === 0" class="empty-state">
+      <div class="empty-icon">🎉</div>
+      <h3>Aucune alerte !</h3>
+      <p>{{ showOnlyUnread ? 'Toutes les alertes ont été lues.' : 'Aucune alerte générée.' }}</p>
+      <button (click)="genererAlertes()" class="btn-primary">
+        🔄 Générer les Alertes
+      </button>
+    </div>
+  </div>
+</div>

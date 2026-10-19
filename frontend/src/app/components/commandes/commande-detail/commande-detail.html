@@ -1,0 +1,110 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>📋 Détails de la Commande</h1>
+    <button (click)="deleteCommande()" class="btn-delete">🗑️ Supprimer</button>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / 
+    <a routerLink="/commandes">Commandes</a> / 
+    <span>{{ commande?.numero_commande }}</span>
+  </nav>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading && commande" class="detail-container">
+    <!-- Informations Générales -->
+    <div class="detail-card">
+      <h2>Informations Générales</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>N° Commande:</label>
+          <span class="numero">{{ commande.numero_commande }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Fournisseur:</label>
+          <span>{{ commande.fournisseur?.nom }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Date Commande:</label>
+          <span>{{ commande.date_commande | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Date Livraison Prévue:</label>
+          <span>{{ commande.date_livraison_prevue | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Statut:</label>
+          <span class="status-badge" [ngClass]="getStatusClass(commande.statut)">
+            {{ commande.statut }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <label>Montant Total:</label>
+          <span class="montant">{{ commande.montant_total }} DT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Statut -->
+    <div class="detail-card">
+      <h2>Actions</h2>
+      <div class="status-actions">
+        <button 
+          *ngIf="commande.statut === 'en_attente'" 
+          (click)="changerStatut('validee')" 
+          class="btn-action btn-validate"
+        >
+          ✅ Valider
+        </button>
+        <button 
+          *ngIf="commande.statut === 'validee'" 
+          (click)="changerStatut('livree')" 
+          class="btn-action btn-deliver"
+        >
+          📦 Marquer comme Livrée
+        </button>
+        <button 
+          *ngIf="commande.statut !== 'annulee' && commande.statut !== 'livree'" 
+          (click)="changerStatut('annulee')" 
+          class="btn-action btn-cancel"
+        >
+          ❌ Annuler
+        </button>
+      </div>
+    </div>
+
+    <!-- Lignes de Commande -->
+    <div class="detail-card">
+      <h2>📦 Produits Commandés</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Référence</th>
+              <th>Quantité</th>
+              <th>Prix Unitaire</th>
+              <th>Sous-Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ligne of commande.lignes">
+              <td>{{ ligne.produit?.nom }}</td>
+              <td>{{ ligne.produit?.reference }}</td>
+              <td>{{ ligne.quantite }}</td>
+              <td>{{ ligne.prix_unitaire }} DT</td>
+              <td><strong>{{ ligne.sous_total }} DT</strong></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align: right;"><strong>TOTAL:</strong></td>
+              <td><strong>{{ commande.montant_total }} DT</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

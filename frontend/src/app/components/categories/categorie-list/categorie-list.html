@@ -1,0 +1,31 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>📁 Liste des Catégories</h1>
+    <button routerLink="/categories/new" class="btn-primary">➕ Nouvelle Catégorie</button>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / <span>Catégories</span>
+  </nav>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading" class="categories-grid">
+    <div *ngFor="let categorie of categories" class="categorie-card">
+      <div class="card-header">
+        <h3>{{ categorie.nom }}</h3>
+        <span class="badge">{{ categorie.nombre_produits ?? 0 }} produits</span>
+      </div>
+      <p class="description">{{ categorie.description || 'Aucune description' }}</p>
+      <div class="card-actions">
+        <button [routerLink]="['/categories', categorie.id, 'edit']" class="btn-edit">✏️ Modifier</button>
+        <button (click)="deleteCategorie(categorie.id)" class="btn-delete">🗑️ Supprimer</button>
+      </div>
+    </div>
+
+    <div *ngIf="categories.length === 0" class="empty-state">
+      <p>Aucune catégorie trouvée.</p>
+      <button routerLink="/categories/new" class="btn-primary">➕ Créer une catégorie</button>
+    </div>
+  </div>
+</div>

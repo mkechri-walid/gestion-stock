@@ -1,0 +1,92 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>📦 Détails du Produit</h1>
+    <div class="header-actions">
+      <button [routerLink]="['/produits', produit?.id, 'edit']" class="btn-edit">✏️ Modifier</button>
+      <button (click)="deleteProduit()" class="btn-delete">🗑️ Supprimer</button>
+    </div>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / 
+    <a routerLink="/produits">Produits</a> / 
+    <span>{{ produit?.nom || 'Détails' }}</span>
+  </nav>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading && produit" class="detail-container">
+    <div class="detail-card">
+      <h2>Informations Générales</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>ID:</label>
+          <span>{{ produit.id }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Référence:</label>
+          <span class="badge-reference">{{ produit.reference }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Nom:</label>
+          <span>{{ produit.nom }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Catégorie:</label>
+          <span>{{ produit.categorie?.nom || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Fournisseur:</label>
+          <span>{{ produit.fournisseur?.nom || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Prix Unitaire:</label>
+          <span class="price">{{ produit.prix_unitaire }} DT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <h2>Stock</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Quantité en Stock:</label>
+          <span class="stock-value">{{ produit.quantite_stock }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Seuil d'Alerte:</label>
+          <span>{{ produit.seuil_alerte }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Statut:</label>
+          <span class="badge" [ngClass]="{
+            'badge-success': !produit.stock_bas,
+            'badge-warning': produit.stock_bas && produit.quantite_stock > 0,
+            'badge-danger': produit.quantite_stock === 0
+          }">
+            {{ produit.quantite_stock === 0 ? '❌ Rupture' : (produit.stock_bas ? '⚠️ Stock Bas' : '✅ Stock OK') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card" *ngIf="produit.description">
+      <h2>Description</h2>
+      <p>{{ produit.description }}</p>
+    </div>
+
+    <div class="detail-card">
+      <h2>Dates</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Créé le:</label>
+          <span>{{ produit.date_creation }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Modifié le:</label>
+          <span>{{ produit.date_modification }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

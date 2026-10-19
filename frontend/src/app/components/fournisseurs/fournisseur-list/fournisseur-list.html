@@ -1,0 +1,47 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>🏢 Liste des Fournisseurs</h1>
+    <button routerLink="/fournisseurs/new" class="btn-primary">➕ Nouveau Fournisseur</button>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / <span>Fournisseurs</span>
+  </nav>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Pays</th>
+          <th>Date Création</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fournisseur of fournisseurs">
+          <td>{{ fournisseur.id }}</td>
+          <td>{{ fournisseur.nom }}</td>
+          <td>{{ fournisseur.email }}</td>
+          <td>{{ fournisseur.telephone || 'N/A' }}</td>
+          <td>{{ fournisseur.pays || 'N/A' }}</td>
+          <td>{{ fournisseur.date_creation | date:'dd/MM/yyyy' }}</td>
+          <td class="actions">
+            <button [routerLink]="['/fournisseurs', fournisseur.id, 'edit']" class="btn-edit" title="Modifier">✏️</button>
+            <button (click)="deleteFournisseur(fournisseur.id!)" class="btn-delete" title="Supprimer">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="fournisseurs.length === 0">
+          <td colspan="7" style="text-align: center; padding: 40px;">
+            Aucun fournisseur trouvé. <a routerLink="/fournisseurs/new">Créer un fournisseur</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

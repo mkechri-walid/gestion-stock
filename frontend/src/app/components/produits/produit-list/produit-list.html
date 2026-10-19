@@ -1,0 +1,62 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>📦 Liste des Produits</h1>
+    <button routerLink="/produits/new" class="btn-primary">➕ Nouveau Produit</button>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / <span>Produits</span>
+  </nav>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Référence</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Prix Unitaire</th>
+          <th>Stock</th>
+          <th>Seuil</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let produit of produits">
+          <td>{{ produit.id }}</td>
+          <td>{{ produit.reference }}</td>
+          <td>{{ produit.nom }}</td>
+          <td>{{ produit.categorie?.nom || 'N/A' }}</td>
+          <td>{{ produit.prix_unitaire }} DT</td>
+          <td>{{ produit.quantite_stock }}</td>
+          <td>{{ produit.seuil_alerte }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-success': !produit.stock_bas,
+              'badge-warning': produit.stock_bas && produit.quantite_stock > 0,
+              'badge-danger': produit.quantite_stock === 0
+            }">
+              {{ produit.quantite_stock === 0 ? 'Rupture' : (produit.stock_bas ? 'Stock Bas' : 'OK') }}
+            </span>
+          </td>
+          <td class="actions">
+            <button [routerLink]="['/produits', produit.id]" class="btn-view" title="Voir">👁️</button>
+            <button [routerLink]="['/produits', produit.id, 'edit']" class="btn-edit" title="Modifier">✏️</button>
+            <button (click)="deleteProduit(produit.id!)" class="btn-delete" title="Supprimer">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="produits.length === 0">
+          <td colspan="9" style="text-align: center; padding: 40px;">
+            Aucun produit trouvé. <a routerLink="/produits/new">Créer un produit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

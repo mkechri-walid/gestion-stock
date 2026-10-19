@@ -1,0 +1,40 @@
+security:
+    # 1. Gestion du hashage (bcrypt/auto)
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # 2. Où chercher les utilisateurs ?
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: email
+
+    firewalls:
+        # 3. La route pour se connecter et obtenir le Token
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: email  
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # 4. Protection de toutes les autres routes de l'API
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+    # 5. Contrôle d'accès (Admin vs Employé)
+    access_control:
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/(dashboard|produits|categories|fournisseurs), roles: PUBLIC_ACCESS }
+        
+        # Seul l'ADMIN peut supprimer un produit
+        - { path: ^/api/produits, methods: [DELETE], roles: ROLE_ADMIN }
+        
+        # L'EMPLOYÉ (ROLE_USER) peut voir et ajouter des produits
+        - { path: ^/api/produits, roles: ROLE_USER }

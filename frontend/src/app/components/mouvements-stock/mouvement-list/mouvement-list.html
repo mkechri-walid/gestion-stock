@@ -1,0 +1,72 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>📊 Mouvements de Stock</h1>
+    <button routerLink="/mouvements/new" class="btn-primary">➕ Nouveau Mouvement</button>
+  </header>
+
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> / <span>Mouvements</span>
+  </nav>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <label for="type-filter">Filtrer par type :</label>
+    <select id="type-filter" [(ngModel)]="filterType" (change)="loadMouvements()">
+      <option value="">Tous les mouvements</option>
+      <option value="entree">📥 Entrées uniquement</option>
+      <option value="sortie">📤 Sorties uniquement</option>
+    </select>
+    <span class="count-badge">{{ filteredMouvements.length }} mouvement(s)</span>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Produit</th>
+          <th>Référence</th>
+          <th>Quantité</th>
+          <th>Motif</th>
+          <th>Commentaire</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mouvement of filteredMouvements">
+          <td>{{ mouvement.date_mouvement | date:'dd/MM/yyyy à HH:mm' }}</td>
+          <td>
+            <span class="type-badge" [ngClass]="getTypeClass(mouvement.type)">
+              {{ getTypeIcon(mouvement.type) }} {{ getTypeLabel(mouvement.type) }}
+            </span>
+          </td>
+          <td>
+            <a [routerLink]="['/produits', mouvement.produit?.id]">
+              {{ mouvement.produit?.nom }}
+            </a>
+          </td>
+          <td>{{ mouvement.produit?.reference }}</td>
+          <td>
+            <strong [ngClass]="{
+              'quantite-positive': mouvement.type === 'entree',
+              'quantite-negative': mouvement.type === 'sortie'
+            }">
+              {{ mouvement.type === 'entree' ? '+' : '-' }}{{ mouvement.quantite }}
+            </strong>
+          </td>
+          <td>
+            <span class="motif-badge">{{ mouvement.motif }}</span>
+          </td>
+          <td class="commentaire">{{ mouvement.commentaire || '-' }}</td>
+        </tr>
+        <tr *ngIf="filteredMouvements.length === 0">
+          <td colspan="7" style="text-align: center; padding: 40px;">
+            Aucun mouvement trouvé. <a routerLink="/mouvements/new">Enregistrer un mouvement</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
